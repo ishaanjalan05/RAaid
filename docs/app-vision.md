@@ -1,52 +1,44 @@
 # Name
 
-- The app is called TeamTime.
+- The app is called RAid.
 
 # Users
 
-- Users are software development teams who do mob programming with drivers and navigators.
+- Users are unveristy residential asisstants 
 
 # Value proposition
 
-An easy to use rotation timer for managing and tracking mob programming sessions.
+RA-facing app that  tracks resident information (contact info, emergency contact, supervisor, etc.) and allows RAs to send universal(across all comunication channels) messages to students or their associated contacts for activities, forms to fill, or anything else 
 
 # Key features
+Message drafting: 
+- RA should be able to type up their broadcast message. Automatically save for the RA to come back to it later. 
 
-Simple mobile-friendly one-screen design with the app name at the top, and below it:
-  - large countdown timer, defaulting to 10 minutes, but adjustable at the start of each session,
-  - a single start/pause buttonm
-  - the team members, shuffled at the start of each session, with the first name highlighted
-Simple operations:
-  - Tap a name to skip or include that team member in the rotation.
-  - Tap start to start the timer, tap again to pause it.
-  - When one minute is left, timer beeps and starts flashing.
-  - When time is up, timer sounds an alarm, resets time, rotates to the next team member, and waits for start.
-Recording-keeping:
-  - At end of each turn, the app logs to the console the current time, rotation duration setting, the driver, and the navigators.
+Communication channel selection 
+- RA should be able to select which communication channel they want to send the message to (email, GroupMe, text, etc). 
+
 
 # Example scenario
 
 Here is an example session.
 
-- Alice, Bob, Cathy, and Dave are a team of developers.
-- Alice, Cathy, and Dave meet to do mob programming for 90 minutes.
-- Alice starts the app on her phone. 
-- It shows a countdown timer, set to 10 minutes, a start button, and a shuffled list of team member names with checkmarks.
-- The first name is highlighted. It happens to be Bob.
-- Alice taps Bob's nam because he is not there. The highlight moves to Dave.
-- Dave sits at the keyboard and starts the timer. He begins entering code suggested by the other team members. 
-- Pizza arrives, so Dave stops the timer and grabs a slice. After a few minutes, he starts the timer to continue his turn.
-- A beep at 9 minutes warns the team is almost time to rotate.
-- Whem time goes to zero, an alarm sounds. Dave stops. The highlight moves to Cathy
-- Cathy taps the start button to begin her turn.
+- Alice, Bob, Cathy, and Dave are students living in RA Edgar's dorm hall. 
+- Alice, Cathy, Cathy, and Dave all have different prefered ways of communication.
+- Alice prefers email, Bob prefers text, Dave perfers GroupMe, and Cathy prefers email. 
+- Edgar needs to send an message about an event he wants to host for the floor. 
+- Edgar opens the app and drafts his message.
+- Edgar stops the drafting the message and closes the application to send a text to someone else, when Edgar returns to the application his drafted message is still there.
+- After finishing his message and is ready to send the message to his residents, so Edgar selects to send his message. 
+- A second screen pops up with checkboxes of the different channels of commmunication for Edgar to select. 
+- Edgar selects the channels he wants the message to send to and pressed send. 
+- After Edgar presses send, he will be notified of all the channels that successfully sent the message to his residents.
 
 # Coding notes
 
-- Use setInterval() to implement the timer.
-- Use AudioContext to play sounds.
-- Define and import a MockAudioContext class for unit testing sounds. 
+- Use variable 'channels' to store the different channel methods and generate a list of possible methods.
 
 # Testing notes
-- Define unit tests for skipping team members in the rotation.
-- Define unit tests for when Start and Stop should appear.
-- Define unit tests for when sounds should happen.
+- Define unit tests for not selecting any channels to send to and attempting to send a message.
+- Define unit tests for sending a blank message.
+- Define unit test for draft message automatically saving. 
+- Define unit test for the popup notifcation that shows the user of the successful channels their message sent to. 
