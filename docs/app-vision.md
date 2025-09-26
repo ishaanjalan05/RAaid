@@ -14,8 +14,8 @@ RA-facing app that  tracks resident information (contact info, emergency contact
 Message drafting: 
 - RA should be able to type up their broadcast message. Automatically save for the RA to come back to it later. 
 
-Communication channel selection 
-- RA should be able to select which communication channel they want to send the message to (email, GroupMe, text, etc). 
+Communication channel sending 
+- RA should be able to send the message across all channels at once. 
 
 
 # Example scenario
@@ -24,18 +24,15 @@ Here is an example session.
 
 - Alice, Bob, Cathy, and Dave are students living in RA Edgar's dorm hall. 
 - Alice, Cathy, Cathy, and Dave all have different prefered ways of communication.
-- Alice prefers email, Bob prefers text, Dave perfers GroupMe, and Cathy prefers email. 
+- Alice prefers receiving an email at alice@gmail.com, Bob prefers receiving a text at 801-123-4567, Dave perfers a GroupMe message with username @Dave123, and Cathy prefers at cathy@gmail.com. 
 - Edgar needs to send an message about an event he wants to host for the floor. 
-- Edgar opens the app and drafts his message.
-- Edgar stops the drafting the message and closes the application to send a text to someone else, when Edgar returns to the application his drafted message is still there.
-- After finishing his message and is ready to send the message to his residents, so Edgar selects to send his message. 
-- A second screen pops up with checkboxes of the different channels of commmunication for Edgar to select. 
+- After finishing drafting his message and is ready to send the message to his residents, so Edgar selects to send his message. 
 - Edgar selects the channels he wants the message to send to and pressed send. 
 - After Edgar presses send, he will be notified of all the channels that successfully sent the message to his residents.
 
 # Coding notes
 
-- Use variable 'channels' to store the different channel methods and generate a list of possible methods.
+- Create a json file to map users to their method of communicaton. 
 
 # Testing notes
 - Define unit tests for not selecting any channels to send to and attempting to send a message.
