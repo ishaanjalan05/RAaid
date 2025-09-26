@@ -4,7 +4,7 @@
 
 # Users
 
-- Users are unveristy residential asisstants 
+- Users are univeristy residential assistants 
 
 # Value proposition
 
