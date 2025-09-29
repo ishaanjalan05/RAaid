@@ -14,10 +14,6 @@ RA-facing app that  tracks resident information (contact info, emergency contact
 Message drafting: 
 - RA should be able to type up their broadcast message. Automatically save for the RA to come back to it later. 
 
-Communication channel sending 
-- RA should be able to send the message across all channels at once. 
-
-
 # Example scenario
 
 Here is an example session.
@@ -27,7 +23,6 @@ Here is an example session.
 - Alice prefers receiving an email at alice@gmail.com, Bob prefers receiving a text at 801-123-4567, Dave perfers a GroupMe message with username @Dave123, and Cathy prefers at cathy@gmail.com. 
 - Edgar needs to send an message about an event he wants to host for the floor. 
 - After finishing drafting his message and is ready to send the message to his residents, so Edgar selects to send his message. 
-- Edgar selects the channels he wants the message to send to and pressed send. 
 - After Edgar presses send, he will be notified of all the channels that successfully sent the message to his residents.
 
 # Coding notes
