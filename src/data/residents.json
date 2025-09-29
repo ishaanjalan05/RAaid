@@ -1,0 +1,63 @@
+{
+  "ra": {
+    "id": "ra-001",
+    "name": "Edgar",
+    "email": "edgar@university.edu"
+  },
+  "residents": [
+    {
+      "id": "res-001",
+      "name": "Alice",
+      "room": "101",
+      "preferredChannel": "email",
+      "email": "alice@gmail.com",
+      "phone": null,
+      "groupme": null
+    },
+    {
+      "id": "res-002",
+      "name": "Bob",
+      "room": "102",
+      "preferredChannel": "sms",
+      "email": "bob@gmail.com",
+      "phone": "801-123-4567",
+      "groupme": null
+    },
+    {
+      "id": "res-003",
+      "name": "Cathy",
+      "room": "103",
+      "preferredChannel": "email",
+      "email": "cathy@gmail.com",
+      "phone": "801-234-5678",
+      "groupme": null
+    },
+    {
+      "id": "res-004",
+      "name": "Dave",
+      "room": "104",
+      "preferredChannel": "groupme",
+      "email": "dave@gmail.com",
+      "phone": "801-345-6789",
+      "groupme": "@Dave123"
+    },
+    {
+      "id": "res-005",
+      "name": "Emma",
+      "room": "105",
+      "preferredChannel": "sms",
+      "email": "emma@gmail.com",
+      "phone": "801-456-7890",
+      "groupme": "@Emma456"
+    },
+    {
+      "id": "res-006",
+      "name": "Frank",
+      "room": "106",
+      "preferredChannel": "email",
+      "email": "frank@gmail.com",
+      "phone": null,
+      "groupme": null
+    }
+  ]
+}
