@@ -14,10 +14,6 @@ RA-facing app that  tracks resident information (contact info, emergency contact
 Message drafting: 
 - RA should be able to type up their broadcast message. Automatically save for the RA to come back to it later. 
 
-Communication channel sending 
-- RA should be able to send the message across all channels at once. 
-
-
 # Example scenario
 
 Here is an example session.
