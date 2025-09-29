@@ -23,7 +23,6 @@ Here is an example session.
 - Alice prefers receiving an email at alice@gmail.com, Bob prefers receiving a text at 801-123-4567, Dave perfers a GroupMe message with username @Dave123, and Cathy prefers at cathy@gmail.com. 
 - Edgar needs to send an message about an event he wants to host for the floor. 
 - After finishing drafting his message and is ready to send the message to his residents, so Edgar selects to send his message. 
-- Edgar selects the channels he wants the message to send to and pressed send. 
 - After Edgar presses send, he will be notified of all the channels that successfully sent the message to his residents.
 
 # Coding notes
