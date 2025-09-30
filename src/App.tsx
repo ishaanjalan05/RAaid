@@ -85,6 +85,10 @@ function App() {
 
     const results: SendResult[] = Array.from(selectedChannels).map(channel => {
       const recipients = getChannelRecipients(channel);
+      // TODO: edit this portion to send the messages
+      for (const resident of recipients) {
+        console.log(`To ${resident.name} via ${channel}: ${message}`);
+      }
       return {
         channel,
         success: true,
