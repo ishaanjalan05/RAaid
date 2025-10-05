@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { Channel } from '../types/Channel';
-import type { Resident } from '../types/Resident';
+import type { Resident } from '../types/resident';
 import type { SendResult } from '../types/SendResult';
 import { clearDraft, loadDraft, saveDraft } from '../utilities/storage';
 import { getChannelRecipients, sendMessage } from '../utilities/messaging';

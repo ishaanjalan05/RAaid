@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import type { Resident } from '../types/Resident';
+import type { Resident } from '../types/resident';
 
 interface ResidentModalProps {
   resident: Resident | null;
