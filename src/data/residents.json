@@ -9,7 +9,7 @@
       "id": "res-001",
       "name": "Alice",
       "room": "101",
-      "preferredChannel": "email",
+      "preferredChannel": "sms",
       "email": "alice@gmail.com",
       "phone": null,
       "groupme": null
@@ -27,7 +27,7 @@
       "id": "res-003",
       "name": "Cathy",
       "room": "103",
-      "preferredChannel": "email",
+      "preferredChannel": "sms",
       "email": "cathy@gmail.com",
       "phone": "801-234-5678",
       "groupme": null
@@ -43,18 +43,18 @@
     },
     {
       "id": "res-005",
-      "name": "Emma",
+      "name": "Ethan",
       "room": "105",
-      "preferredChannel": "sms",
-      "email": "emma@gmail.com",
+      "preferredChannel": "email",
+      "email": "ethanguo2026@u.northwestern.edu",
       "phone": "801-456-7890",
-      "groupme": "@Emma456"
+      "groupme": "@Ethan456"
     },
     {
       "id": "res-006",
       "name": "Frank",
       "room": "106",
-      "preferredChannel": "email",
+      "preferredChannel": "sms",
       "email": "frank@gmail.com",
       "phone": null,
       "groupme": null

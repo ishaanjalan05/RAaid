@@ -10,9 +10,9 @@ import { SendButton } from './components/SendButton';
 import { ResidentsList } from './components/ResidentsList';
 import { getChannelRecipients } from './utilities/residentUtils';
 import { saveDraft, loadDraft, clearDraft } from './utilities/localStorage';
-import emailjs from "@emailjs/browser";
-
-
+import { sendEmail } from './utilities/sendEmail';
+import { sendGroupMe } from './utilities/sendGroupMe';
+import { sendSMS } from './utilities/sendSMS';
 
 function App() {
   const [message, setMessage] = useState('');
@@ -82,26 +82,40 @@ function App() {
       };
     });
 
-    // Simulate sending messages, replace with firebase functions once thats done
-    // TODO: Replace with actual firebase function call
-    // const response = await sendMessages(channelParams);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    // Send messages through appropriate channels
+    const results: SendResult[] = await Promise.all(
+      channelParams.map(async (params) => {
+        let success = false;
 
-    emailjs.init('l_SwAE35PFsf-DwDl')
+        try {
+          if (params.channel === 'email') {
+            success = await sendEmail({
+              message: params.message,
+              recipients: params.recipients
+            });
+          } else if (params.channel === 'groupme') {
+            success = await sendGroupMe({
+              message: params.message,
+              recipients: params.recipients
+            });
+          } else if (params.channel === 'sms') {
+            success = await sendSMS({
+              message: params.message,
+              recipients: params.recipients
+            });
+          }
+        } catch (error) {
+          console.error(`Error sending ${params.channel} message:`, error);
+          success = false;
+        }
 
-    emailjs.send('service_5kjhbqn', 'template_k18ymz9',
-      {
-        to_email: 'timofei@u.northwestern.edu',
-        from_name: 'RA Broadcast',
-        message: message.trim(),
-      }
-    )
-
-    const results: SendResult[] = channelParams.map((params) => ({
-      channel: params.channel,
-      success: true,
-      recipientCount: params.recipients.length
-    }));
+        return {
+          channel: params.channel,
+          success,
+          recipientCount: params.recipients.length
+        };
+      })
+    );
 
     setSendResults(results);
     setIsSending(false);
@@ -130,7 +144,7 @@ function App() {
           <ChannelSelector
             selectedChannels={selectedChannels}
             onToggleChannel={toggleChannel}
-            getChannelRecipients={(channel) => getChannelRecipients(residents, channel)}
+            getChannelRecipients={(channel: Channel) => getChannelRecipients(residents, channel)}
             disabled={isSending}
           />
 
