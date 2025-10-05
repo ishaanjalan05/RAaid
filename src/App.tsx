@@ -10,6 +10,9 @@ import { SendButton } from './components/SendButton';
 import { ResidentsList } from './components/ResidentsList';
 import { getChannelRecipients } from './utilities/residentUtils';
 import { saveDraft, loadDraft, clearDraft } from './utilities/localStorage';
+import emailjs from "@emailjs/browser";
+
+
 
 function App() {
   const [message, setMessage] = useState('');
@@ -83,6 +86,16 @@ function App() {
     // TODO: Replace with actual firebase function call
     // const response = await sendMessages(channelParams);
     await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    emailjs.init('l_SwAE35PFsf-DwDl')
+
+    emailjs.send('service_5kjhbqn', 'template_k18ymz9',
+      {
+        to_email: 'timofei@u.northwestern.edu',
+        from_name: 'RA Broadcast',
+        message: message.trim(),
+      }
+    )
 
     const results: SendResult[] = channelParams.map((params) => ({
       channel: params.channel,
