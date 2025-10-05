@@ -1,51 +1,13 @@
-import { useState } from 'react';
-import type { Resident } from '../types/Resident';
-import { useResidents } from './ResidentProvider';
-import { ResidentModal } from './ResidentModal';
+import type { Resident } from '../types/resident';
 
 interface ResidentsListProps {
   residents: Resident[];
 }
-        
-export const ResidentsList = () => {
-  const { residents, addResident, updateResident, deleteResident } =
-    useResidents();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedResident, setSelectedResident] = useState<Resident | null>(
-    null,
-  );
 
-  const handleAdd = () => {
-    setSelectedResident(null);
-    setIsModalOpen(true);
-  };
-
-  const handleEdit = (resident: Resident) => {
-    setSelectedResident(resident);
-    setIsModalOpen(true);
-  };
-
-  const handleSave = (resident: Resident | Omit<Resident, 'id'>) => {
-    if ('id' in resident) {
-      updateResident(resident);
-    } else {
-      addResident(resident);
-    }
-    setIsModalOpen(false);
-  };
-
-  export const ResidentsList = ({ residents }: ResidentsListProps) => {
-    return (
+export const ResidentsList = ({ residents }: ResidentsListProps) => {
+  return (
     <div className="mt-6 bg-white rounded-lg shadow-md p-6">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold text-gray-800">Residents</h2>
-        <button
-          onClick={handleAdd}
-          className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
-        >
-          Add Resident
-        </button>
-      </div>
+      <h2 className="text-xl font-semibold text-gray-800 mb-4">Residents</h2>
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
@@ -82,32 +44,11 @@ export const ResidentsList = () => {
                   {resident.preferredChannel === 'sms' && resident.phone}
                   {resident.preferredChannel === 'groupme' && resident.groupme}
                 </td>
-                <td className="py-3 px-3 text-sm text-gray-600 space-x-2">
-                  <button
-                    onClick={() => handleEdit(resident)}
-                    className="text-indigo-600 hover:text-indigo-900"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => deleteResident(resident.id)}
-                    className="text-red-600 hover:text-red-900"
-                  >
-                    Delete
-                  </button>
-                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      {isModalOpen && (
-        <ResidentModal
-          resident={selectedResident}
-          onSave={handleSave}
-          onClose={() => setIsModalOpen(false)}
-        />
-      )}
     </div>
   );
 };

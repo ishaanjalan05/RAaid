@@ -1,20 +1,24 @@
+import { useState, useEffect } from 'react';
 import residentsData from './data/residents.json';
 import type { Channel, Resident, SendResult } from './types/resident';
 import { Header } from './components/Header';
 import { MessageInput } from './components/MessageInput';
-import { BroadcastMessage } from './components/BroadcastMessage';
 import { ChannelSelector } from './components/ChannelSelector';
 import { ErrorMessage } from './components/ErrorMessage';
 import { SuccessResults } from './components/SuccessResults';
 import { SendButton } from './components/SendButton';
-import { ResidentProvider } from './components/ResidentProvider';
 import { ResidentsList } from './components/ResidentsList';
 import { getChannelRecipients } from './utilities/residentUtils';
 import { saveDraft, loadDraft, clearDraft } from './utilities/localStorage';
 
 function App() {
+  const [message, setMessage] = useState('');
+  const [selectedChannels, setSelectedChannels] = useState<Set<Channel>>(new Set());
+  const [isSending, setIsSending] = useState(false);
+  const [sendResults, setSendResults] = useState<SendResult[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
   const residents = residentsData.residents as Resident[];
-  const raName = residentsData.ra.name;
 
   // Auto-save draft message to localStorage
   useEffect(() => {
@@ -99,9 +103,8 @@ function App() {
     setError(null);
     clearDraft();
   };
-        
+
   return (
-    <ResidentProvider initialResidents={residents}>
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         <Header raName={residentsData.ra.name} residentCount={residents.length} />
@@ -132,10 +135,9 @@ function App() {
           </div>
         </div>
 
-        <BroadcastMessage residents={residents}/>
         <ResidentsList residents={residents} />
       </div>
-    </ResidentProvider>
+    </div>
   );
 }
 
