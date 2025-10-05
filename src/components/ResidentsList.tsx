@@ -3,6 +3,10 @@ import type { Resident } from '../types/Resident';
 import { useResidents } from './ResidentProvider';
 import { ResidentModal } from './ResidentModal';
 
+interface ResidentsListProps {
+  residents: Resident[];
+}
+        
 export const ResidentsList = () => {
   const { residents, addResident, updateResident, deleteResident } =
     useResidents();
@@ -30,7 +34,8 @@ export const ResidentsList = () => {
     setIsModalOpen(false);
   };
 
-  return (
+  export const ResidentsList = ({ residents }: ResidentsListProps) => {
+    return (
     <div className="mt-6 bg-white rounded-lg shadow-md p-6">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold text-gray-800">Residents</h2>
@@ -45,35 +50,17 @@ export const ResidentsList = () => {
         <table className="w-full">
           <thead>
             <tr className="border-b border-gray-200">
-              <th className="text-left py-2 px-3 text-sm font-medium text-gray-700">
-                Name
-              </th>
-              <th className="text-left py-2 px-3 text-sm font-medium text-gray-700">
-                Room
-              </th>
-              <th className="text-left py-2 px-3 text-sm font-medium text-gray-700">
-                Preferred
-              </th>
-              <th className="text-left py-2 px-3 text-sm font-medium text-gray-700">
-                Contact
-              </th>
-              <th className="text-left py-2 px-3 text-sm font-medium text-gray-700">
-                Actions
-              </th>
+              <th className="text-left py-2 px-3 text-sm font-medium text-gray-700">Name</th>
+              <th className="text-left py-2 px-3 text-sm font-medium text-gray-700">Room</th>
+              <th className="text-left py-2 px-3 text-sm font-medium text-gray-700">Preferred</th>
+              <th className="text-left py-2 px-3 text-sm font-medium text-gray-700">Contact</th>
             </tr>
           </thead>
           <tbody>
             {residents.map((resident) => (
-              <tr
-                key={resident.id}
-                className="border-b border-gray-100 hover:bg-gray-50"
-              >
-                <td className="py-3 px-3 text-sm text-gray-900">
-                  {resident.name}
-                </td>
-                <td className="py-3 px-3 text-sm text-gray-600">
-                  {resident.room}
-                </td>
+              <tr key={resident.id} className="border-b border-gray-100 hover:bg-gray-50">
+                <td className="py-3 px-3 text-sm text-gray-900">{resident.name}</td>
+                <td className="py-3 px-3 text-sm text-gray-600">{resident.room}</td>
                 <td className="py-3 px-3">
                   <span
                     className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
@@ -87,9 +74,7 @@ export const ResidentsList = () => {
                     {resident.preferredChannel === 'email' && '📧'}
                     {resident.preferredChannel === 'sms' && '💬'}
                     {resident.preferredChannel === 'groupme' && '👥'}
-                    <span className="ml-1 capitalize">
-                      {resident.preferredChannel}
-                    </span>
+                    <span className="ml-1 capitalize">{resident.preferredChannel}</span>
                   </span>
                 </td>
                 <td className="py-3 px-3 text-sm text-gray-600">

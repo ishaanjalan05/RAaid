@@ -9,7 +9,9 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest --ui",
-    "coverage": "vitest run --coverage"
+    "coverage": "vitest run --coverage",
+    "prep": "npm run build && npm run dev",
+    "deploy": "npm run build && firebase deploy"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.13",
