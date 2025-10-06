@@ -13,6 +13,7 @@ import { saveDraft, loadDraft, clearDraft } from './utilities/localStorage';
 import { sendEmail } from './utilities/sendEmail';
 import { sendGroupMe } from './utilities/sendGroupMe';
 import { sendSMS } from './utilities/sendSMS';
+import { ResidentForm } from './components/ResidentForm';
 
 function App() {
   const [message, setMessage] = useState('');
@@ -20,8 +21,9 @@ function App() {
   const [isSending, setIsSending] = useState(false);
   const [sendResults, setSendResults] = useState<SendResult[] | null>(null);
   const [error, setError] = useState<string | null>(null);
-
-  const residents = residentsData.residents as Resident[];
+  const [residents, setResidents] = useState<Resident[]>(residentsData.residents as Resident[]);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editingResident, setEditingResident] = useState<Resident | null>(null);
 
   // Auto-save draft message to localStorage
   useEffect(() => {
@@ -45,7 +47,7 @@ function App() {
       newChannels.delete(channel);
     } else {
       newChannels.add(channel);
-    } 
+    }
     setSelectedChannels(newChannels);
   };
 
@@ -131,6 +133,36 @@ function App() {
     clearDraft();
   };
 
+  const handleAddResident = () => {
+    setEditingResident(null);
+    setIsFormOpen(true);
+  };
+
+  const handleEditResident = (resident: Resident) => {
+    setEditingResident(resident);
+    setIsFormOpen(true);
+  };
+
+  const handleDeleteResident = (residentId: string) => {
+    setResidents(residents.filter((r) => r.id !== residentId));
+  };
+
+  const handleSaveResident = (resident: Resident) => {
+    if (editingResident) {
+      setResidents(residents.map((r) => (r.id === resident.id ? resident : r)));
+    } else {
+      const newResident = { ...resident, id: Date.now().toString() };
+      setResidents([...residents, newResident]);
+    }
+    setIsFormOpen(false);
+    setEditingResident(null);
+  };
+
+  const handleCancelForm = () => {
+    setIsFormOpen(false);
+    setEditingResident(null);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <div className="container mx-auto px-4 py-8 max-w-4xl">
@@ -162,7 +194,20 @@ function App() {
           </div>
         </div>
 
-        <ResidentsList residents={residents} />
+        <ResidentsList
+          residents={residents}
+          onAdd={handleAddResident}
+          onEdit={handleEditResident}
+          onDelete={handleDeleteResident}
+        />
+
+        {isFormOpen && (
+          <ResidentForm
+            resident={editingResident}
+            onSave={handleSaveResident}
+            onCancel={handleCancelForm}
+          />
+        )}
       </div>
     </div>
   );
