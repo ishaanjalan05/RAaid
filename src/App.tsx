@@ -15,6 +15,8 @@ import { sendGroupMe } from './utilities/sendGroupMe';
 import { sendSMS } from './utilities/sendSMS';
 import { ResidentForm } from './components/ResidentForm';
 
+// TODO: Add email and groupme features, as well as login tools for personalization
+
 function App() {
   const [message, setMessage] = useState('');
   const [selectedChannels, setSelectedChannels] = useState<Set<Channel>>(new Set());
