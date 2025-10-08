@@ -2,12 +2,24 @@ import type { Resident } from '../types/resident';
 
 type ResidentsListProps = {
   residents: Resident[];
+  selectedResidentIds: Set<string>;
+  onToggleResident: (residentId: string) => void;
+  onToggleAll: () => void;
   onAdd: () => void;
   onEdit: (resident: Resident) => void;
   onDelete: (residentId: string) => void;
 };
 
-export const ResidentsList = ({ residents, onAdd, onEdit, onDelete }: ResidentsListProps) => {
+export const ResidentsList = ({
+  residents,
+  selectedResidentIds,
+  onToggleResident,
+  onToggleAll,
+  onAdd,
+  onEdit,
+  onDelete
+}: ResidentsListProps) => {
+  const allSelected = residents.length > 0 && selectedResidentIds.size === residents.length;
   return (
     <div className="mt-8 bg-white rounded-lg shadow-md p-6">
       <div className="flex justify-between items-center mb-4">
@@ -23,6 +35,14 @@ export const ResidentsList = ({ residents, onAdd, onEdit, onDelete }: ResidentsL
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
+              <th scope="col" className="px-6 py-3 text-left">
+                <input
+                  type="checkbox"
+                  checked={allSelected}
+                  onChange={onToggleAll}
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                />
+              </th>
               <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Name
               </th>
@@ -43,6 +63,14 @@ export const ResidentsList = ({ residents, onAdd, onEdit, onDelete }: ResidentsL
           <tbody className="bg-white divide-y divide-gray-200">
             {residents.map((resident) => (
               <tr key={resident.id} className="hover:bg-gray-50">
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <input
+                    type="checkbox"
+                    checked={selectedResidentIds.has(resident.id)}
+                    onChange={() => onToggleResident(resident.id)}
+                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                  />
+                </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   {resident.name}
                 </td>

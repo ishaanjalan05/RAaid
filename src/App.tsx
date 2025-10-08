@@ -7,7 +7,7 @@ import { ErrorMessage } from './components/ErrorMessage';
 import { SuccessResults } from './components/SuccessResults';
 import { SendButton } from './components/SendButton';
 import { ResidentsList } from './components/ResidentsList';
-import { getChannelRecipients } from './utilities/residentUtils';
+// import { getChannelRecipients } from './utilities/residentUtils';
 import { saveDraft, loadDraft, clearDraft } from './utilities/localStorage';
 import { sendEmail } from './utilities/sendEmail';
 import { sendGroupMe } from './utilities/sendGroupMe';
@@ -18,10 +18,14 @@ import { ResidentForm } from './components/ResidentForm';
 
 function App() {
   const [message, setMessage] = useState('');
+  const [sendToAllChannels, setSendToAllChannels] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [sendResults, setSendResults] = useState<SendResult[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [residents, setResidents] = useState<Resident[]>(residentsData.residents as Resident[]);
+  const [selectedResidentIds, setSelectedResidentIds] = useState<Set<string>>(
+    new Set(residentsData.residents.map((r) => r.id))
+  );
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingResident, setEditingResident] = useState<Resident | null>(null);
 
@@ -51,12 +55,36 @@ function App() {
       return;
     }
 
+    if (selectedResidentIds.size === 0) {
+      setError('Please select at least one resident');
+      return;
+    }
+
     setIsSending(true);
 
-    // Send via all channels
-    const allChannels: Channel[] = ['email', 'sms', 'groupme'];
-    const channelParams = allChannels.map((channel) => {
-      const recipients = getChannelRecipients(residents, channel);
+    // Determine which channels to use
+    let channelsToUse: Channel[];
+    if (sendToAllChannels) {
+      // Send via all channels
+      channelsToUse = ['email', 'sms', 'groupme'];
+    } else {
+      // Send only via preferred channels
+      channelsToUse = ['email', 'sms', 'groupme'];
+    }
+
+    // Filter to only selected residents
+    const selectedResidents = residents.filter((r) => selectedResidentIds.has(r.id));
+
+    const channelParams = channelsToUse.map((channel) => {
+      let recipients;
+      if (sendToAllChannels) {
+        // Send to all selected residents via all channels
+        recipients = selectedResidents;
+      } else {
+        // Get only selected residents who prefer this channel
+        recipients = selectedResidents.filter((r) => r.preferredChannel === channel);
+      }
+
       return {
         channel,
         message: message.trim(),
@@ -108,12 +136,15 @@ function App() {
     setSendResults(results);
     setIsSending(false);
 
-    // Clear draft after successful send
+    // Clear draft, message, and checkbox after send
+    setMessage('');
+    setSendToAllChannels(false);
     clearDraft();
   };
 
   const handleNewMessage = () => {
     setMessage('');
+    setSendToAllChannels(false);
     setSendResults(null);
     setError(null);
     clearDraft();
@@ -139,6 +170,8 @@ function App() {
     } else {
       const newResident = { ...resident, id: Date.now().toString() };
       setResidents([...residents, newResident]);
+      // Auto-select newly added resident
+      setSelectedResidentIds(new Set([...selectedResidentIds, newResident.id]));
     }
     setIsFormOpen(false);
     setEditingResident(null);
@@ -147,6 +180,26 @@ function App() {
   const handleCancelForm = () => {
     setIsFormOpen(false);
     setEditingResident(null);
+  };
+
+  const handleToggleResident = (residentId: string) => {
+    const newSelected = new Set(selectedResidentIds);
+    if (newSelected.has(residentId)) {
+      newSelected.delete(residentId);
+    } else {
+      newSelected.add(residentId);
+    }
+    setSelectedResidentIds(newSelected);
+  };
+
+  const handleToggleAllResidents = () => {
+    if (selectedResidentIds.size === residents.length) {
+      // Deselect all
+      setSelectedResidentIds(new Set());
+    } else {
+      // Select all
+      setSelectedResidentIds(new Set(residents.map((r) => r.id)));
+    }
   };
 
   return (
@@ -158,6 +211,26 @@ function App() {
           <h2 className="text-xl font-semibold text-gray-800 mb-4">Broadcast Message</h2>
 
           <MessageInput value={message} onChange={setMessage} disabled={isSending} />
+
+          <div className="mb-4">
+            <label className="flex items-center space-x-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={sendToAllChannels}
+                onChange={(e) => setSendToAllChannels(e.target.checked)}
+                disabled={isSending}
+                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+              />
+              <span className="text-sm text-gray-700">
+                Send via all communication channels (email, SMS, and GroupMe)
+              </span>
+            </label>
+            {!sendToAllChannels && (
+              <p className="text-xs text-gray-500 mt-1 ml-6">
+                When unchecked, messages are sent only via each resident's preferred method
+              </p>
+            )}
+          </div>
 
           {error && <ErrorMessage message={error} />}
 
@@ -175,6 +248,9 @@ function App() {
 
         <ResidentsList
           residents={residents}
+          selectedResidentIds={selectedResidentIds}
+          onToggleResident={handleToggleResident}
+          onToggleAll={handleToggleAllResidents}
           onAdd={handleAddResident}
           onEdit={handleEditResident}
           onDelete={handleDeleteResident}
