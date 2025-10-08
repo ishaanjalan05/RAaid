@@ -3,7 +3,6 @@ import residentsData from './data/residents.json';
 import type { Channel, Resident, SendResult } from './types/resident';
 import { Header } from './components/Header';
 import { MessageInput } from './components/MessageInput';
-import { ChannelSelector } from './components/ChannelSelector';
 import { ErrorMessage } from './components/ErrorMessage';
 import { SuccessResults } from './components/SuccessResults';
 import { SendButton } from './components/SendButton';
@@ -19,7 +18,6 @@ import { ResidentForm } from './components/ResidentForm';
 
 function App() {
   const [message, setMessage] = useState('');
-  const [selectedChannels, setSelectedChannels] = useState<Set<Channel>>(new Set());
   const [isSending, setIsSending] = useState(false);
   const [sendResults, setSendResults] = useState<SendResult[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -43,16 +41,6 @@ function App() {
     return () => clearTimeout(timer);
   }, [message]);
 
-  const toggleChannel = (channel: Channel) => {
-    const newChannels = new Set(selectedChannels);
-    if (newChannels.has(channel)) {
-      newChannels.delete(channel);
-    } else {
-      newChannels.add(channel);
-    }
-    setSelectedChannels(newChannels);
-  };
-
   const handleSend = async () => {
     setError(null);
     setSendResults(null);
@@ -63,15 +51,11 @@ function App() {
       return;
     }
 
-    if (selectedChannels.size === 0) {
-      setError('Please select at least one channel');
-      return;
-    }
-
     setIsSending(true);
 
-    // Prepare parameters for each channel
-    const channelParams = Array.from(selectedChannels).map((channel) => {
+    // Send via all channels
+    const allChannels: Channel[] = ['email', 'sms', 'groupme'];
+    const channelParams = allChannels.map((channel) => {
       const recipients = getChannelRecipients(residents, channel);
       return {
         channel,
@@ -174,13 +158,6 @@ function App() {
           <h2 className="text-xl font-semibold text-gray-800 mb-4">Broadcast Message</h2>
 
           <MessageInput value={message} onChange={setMessage} disabled={isSending} />
-
-          <ChannelSelector
-            selectedChannels={selectedChannels}
-            onToggleChannel={toggleChannel}
-            getChannelRecipients={(channel: Channel) => getChannelRecipients(residents, channel)}
-            disabled={isSending}
-          />
 
           {error && <ErrorMessage message={error} />}
 
