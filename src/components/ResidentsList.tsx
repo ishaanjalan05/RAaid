@@ -50,9 +50,6 @@ export const ResidentsList = ({
                 Room
               </th>
               <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Preferred
-              </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Contact
               </th>
               <th scope="col" className="relative px-6 py-3">
@@ -77,26 +74,52 @@ export const ResidentsList = ({
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                   {resident.room}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm">
-                  <span
-                    className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-                      resident.preferredChannel === 'email'
-                        ? 'bg-blue-100 text-blue-800'
-                        : resident.preferredChannel === 'sms'
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-purple-100 text-purple-800'
-                    }`}
-                  >
-                    {resident.preferredChannel === 'email' && '📧'}
-                    {resident.preferredChannel === 'sms' && '💬'}
-                    {resident.preferredChannel === 'groupme' && '👥'}
-                    <span className="ml-1 capitalize">{resident.preferredChannel}</span>
-                  </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {resident.preferredChannel === 'email' && resident.email}
-                  {resident.preferredChannel === 'sms' && resident.phone}
-                  {resident.preferredChannel === 'groupme' && resident.groupme}
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                  {(() => {
+                    // Determine effective channel: prefer preferredChannel if it has data; otherwise fallback in order email, sms, groupme
+                    const hasEmail = Boolean(resident.email);
+                    const hasSms = Boolean(resident.phone);
+                    const hasGroupme = Boolean(resident.groupme);
+
+                    const preferred = resident.preferredChannel;
+
+                    const preferredHasData =
+                      (preferred === 'email' && hasEmail) ||
+                      (preferred === 'sms' && hasSms) ||
+                      (preferred === 'groupme' && hasGroupme);
+
+                    const effectiveChannel = preferredHasData
+                      ? preferred
+                      : hasEmail
+                        ? 'email'
+                        : hasSms
+                          ? 'sms'
+                          : hasGroupme
+                            ? 'groupme'
+                            : null;
+
+                    if (!effectiveChannel) return null;
+
+                    const label =
+                      effectiveChannel === 'email'
+                        ? 'Email'
+                        : effectiveChannel === 'sms'
+                          ? 'SMS'
+                          : 'GroupMe';
+
+                    const value =
+                      effectiveChannel === 'email'
+                        ? resident.email
+                        : effectiveChannel === 'sms'
+                          ? resident.phone
+                          : resident.groupme;
+
+                    return (
+                      <span>
+                        {label}: {value}
+                      </span>
+                    );
+                  })()}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
                   <button
