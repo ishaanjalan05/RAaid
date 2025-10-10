@@ -7,7 +7,6 @@ import { ErrorMessage } from './components/ErrorMessage';
 import { SuccessResults } from './components/SuccessResults';
 import { SendButton } from './components/SendButton';
 import { ResidentsList } from './components/ResidentsList';
-// import { getChannelRecipients } from './utilities/residentUtils';
 import { saveDraft, loadDraft, clearDraft } from './utilities/localStorage';
 import { sendEmail } from './utilities/sendEmail';
 import { sendGroupMe } from './utilities/sendGroupMe';
@@ -18,7 +17,6 @@ import { ResidentForm } from './components/ResidentForm';
 
 function App() {
   const [message, setMessage] = useState('');
-  const [sendToAllChannels, setSendToAllChannels] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [sendResults, setSendResults] = useState<SendResult[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -62,41 +60,40 @@ function App() {
 
     setIsSending(true);
 
-    // Determine which channels to use
-    let channelsToUse: Channel[];
-    if (sendToAllChannels) {
-      // Send via all channels
-      channelsToUse = ['email', 'sms', 'groupme'];
-    } else {
-      // Send only via preferred channels
-      channelsToUse = ['email', 'sms', 'groupme'];
-    }
+    // Resolve each selected resident's channel: preferred if contact exists; otherwise fallback email > sms > groupme
+    const channelToRecipients: Record<Channel, { id: string; name: string; contact: string | null }[]> = {
+      email: [],
+      sms: [],
+      groupme: []
+    };
 
-    // Filter to only selected residents
     const selectedResidents = residents.filter((r) => selectedResidentIds.has(r.id));
 
-    const channelParams = channelsToUse.map((channel) => {
-      let recipients;
-      if (sendToAllChannels) {
-        // Send to all selected residents via all channels
-        recipients = selectedResidents;
-      } else {
-        // Get only selected residents who prefer this channel
-        recipients = selectedResidents.filter((r) => r.preferredChannel === channel);
+    for (const resident of selectedResidents) {
+      const tryAdd = (channel: Channel) => {
+        const contact = channel === 'email' ? resident.email : channel === 'sms' ? resident.phone : resident.groupme;
+        if (contact) {
+          channelToRecipients[channel].push({ id: resident.id, name: resident.name, contact });
+          return true;
+        }
+        return false;
+      };
+
+      // Use preferred if it has contact info
+      if (resident.preferredChannel && tryAdd(resident.preferredChannel)) {
+        continue;
       }
 
-      return {
-        channel,
-        message: message.trim(),
-        recipients: recipients.map((resident) => ({
-          id: resident.id,
-          name: resident.name,
-          contact: channel === 'email' ? resident.email :
-                   channel === 'sms' ? resident.phone :
-                   resident.groupme
-        }))
-      };
-    });
+      // Fallback order: email -> sms -> groupme
+      if (tryAdd('email')) continue;
+      if (tryAdd('sms')) continue;
+      if (tryAdd('groupme')) continue;
+      // If no contact at all, skip resident
+    }
+
+    const channelParams = (['email', 'sms', 'groupme'] as Channel[])
+      .filter((ch) => channelToRecipients[ch].length > 0)
+      .map((channel) => ({ channel, message: message.trim(), recipients: channelToRecipients[channel] }));
 
     // Send messages through appropriate channels
     const results: SendResult[] = await Promise.all(
@@ -136,15 +133,13 @@ function App() {
     setSendResults(results);
     setIsSending(false);
 
-    // Clear draft, message, and checkbox after send
+    // Clear draft and message after send
     setMessage('');
-    setSendToAllChannels(false);
     clearDraft();
   };
 
   const handleNewMessage = () => {
     setMessage('');
-    setSendToAllChannels(false);
     setSendResults(null);
     setError(null);
     clearDraft();
@@ -212,25 +207,7 @@ function App() {
 
           <MessageInput value={message} onChange={setMessage} disabled={isSending} />
 
-          <div className="mb-4">
-            <label className="flex items-center space-x-2 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={sendToAllChannels}
-                onChange={(e) => setSendToAllChannels(e.target.checked)}
-                disabled={isSending}
-                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
-              />
-              <span className="text-sm text-gray-700">
-                Send via all communication channels (email, SMS, and GroupMe)
-              </span>
-            </label>
-            {!sendToAllChannels && (
-              <p className="text-xs text-gray-500 mt-1 ml-6">
-                When unchecked, messages are sent only via each resident's preferred method
-              </p>
-            )}
-          </div>
+          {/* Channel selection removed: now messages are sent only to each resident's preferred channel with fallback */}
 
           {error && <ErrorMessage message={error} />}
 
